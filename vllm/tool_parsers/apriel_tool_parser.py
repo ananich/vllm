@@ -38,11 +38,14 @@ class AprielToolParser(ToolParser):
         self.tool_calls_end_token: str = "</tool_calls>"
         self.answer_tool_calls_pattern = re.compile(
             r"<tool_calls>([\s\S]*?)</tool_calls>", re.DOTALL)
+        self._TYPOGRAPHIC_TO_ASCII = str.maketrans({
+            "\u201c": '"', "\u201d": '"',  # “ ”
+            "\u2018": "'", "\u2019": "'",  # ‘ ’
+        })
 
     # --- RESTORED Non-Streaming Methods ---
 
-    def preprocess_model_output(
-            self, model_output: str) -> tuple[Optional[str], Optional[str]]:
+    def preprocess_model_output(self, model_output: str) -> tuple[Optional[str], Optional[str]]:
         def is_valid_json(s: str) -> bool:
             try:
                 json.loads(s)
@@ -54,6 +57,7 @@ class AprielToolParser(ToolParser):
         for match in self.answer_tool_calls_pattern.finditer(model_output):
             start, end = match.span()
             tool_calls_content = match.group(1).strip()
+            tool_calls_content = tool_calls_content.translate(self._TYPOGRAPHIC_TO_ASCII)
 
             # Check if tool call is inside a final response region
             if "[BEGIN FINAL RESPONSE]" in model_output and "[END FINAL RESPONSE]" in model_output:
@@ -168,6 +172,7 @@ class AprielToolParser(ToolParser):
         """Helper function to parse tool calls once we are in the tool call phase."""
         try:
             parsable_text = current_text.split(self.tool_calls_start_token, 1)[1]
+            parsable_text = parsable_text.translate(self._TYPOGRAPHIC_TO_ASCII)
             if self.tool_calls_end_token in parsable_text:
                 parsable_text = parsable_text.split(self.tool_calls_end_token, 1)[0]
         except IndexError:
