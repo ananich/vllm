@@ -29,8 +29,8 @@ class AprielReasoningParser(ReasoningParser):
           reasoning state and other state so it maintains internal state to
           manage parsing across multiple token.
     """
-    def __init__(self, tokenizer: PreTrainedTokenizerBase):
-        super().__init__(tokenizer)
+    def __init__(self, tokenizer: PreTrainedTokenizerBase, *args, **kwargs):
+        super().__init__(tokenizer, *args, **kwargs)
 
         self.reasoning_end_token_ids = self.model_tokenizer.encode(
             "[BEGIN FINAL RESPONSE]")
