@@ -156,6 +156,10 @@ _REASONING_PARSERS_TO_REGISTER = {
         "inkling_reasoning_parser",
         "InklingParserReasoningAdapter",
     ),
+    "apriel": (
+        "apriel_reasoning_parser",
+        "AprielReasoningParser",
+    ),
 }
 
 

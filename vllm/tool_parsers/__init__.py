@@ -226,6 +226,10 @@ _TOOL_PARSERS_TO_REGISTER = {
         "apertus_tool_parser",
         "ApertusToolParser",
     ),
+    "apriel": (
+        "apriel_tool_parser",
+        "AprielToolParser",
+    ),
 }
 
 
